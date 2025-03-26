@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Nilai</title>
+    <script>
+        function cekNilai() {
+            var nim = document.getElementById('nim').value;
+            var nilai = parseInt(document.getElementById('nilai').value);
+            var hasil = document.getElementById('hasil');
+
+            if (isNaN(nilai) || nilai < 0 || nilai > 100) {
+                hasil.innerHTML = "Nilai tidak valid!";
+                hasil.style.color = "red";
+            } else {
+                var hurufMutu;
+                if (nilai >= 80) {
+                    hurufMutu = "A";
+                } else if (nilai >= 70) {
+                    hurufMutu = "B";
+                } else if (nilai >= 60) {
+                    hurufMutu = "C";
+                } else if (nilai >= 50) {
+                    hurufMutu = "D";
+                } else {
+                    hurufMutu = "E";
+                }
+                hasil.innerHTML = "Huruf Mutu: " + hurufMutu;
+                hasil.style.color = "green";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Cek Nilai Mahasiswa</h1>
+    <form>
+        <label for="nim">NIM:</label>
+        <input type="text" id="nim" name="nim" required><br><br>
+
+        <label for="nilai">Nilai:</label>
+        <input type="number" id="nilai" name="nilai" min="0" max="100" required><br><br>
+
+        <button type="button" onclick="cekNilai()">Cek Nilai</button>
+    </form>
+
+    <p id="hasil"></p>
+</body>
+</html>
