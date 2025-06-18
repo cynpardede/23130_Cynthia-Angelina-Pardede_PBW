@@ -1,31 +1,29 @@
 <?php
-   include 'koneksi_db.php'; // Pastikan $conn = new mysqli(...)
+include 'koneksi_db.php';
 
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $id = $_GET['id'];
 
-   if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-       $id = $_GET['id'];
+    // Hapus dulu dari tabel detail_pesanan (jika foreign key tidak cascade)
+    $stmt1 = $conn->prepare("DELETE FROM detail_pesanan WHERE Buku_ID = ?");
+    $stmt1->bind_param("i", $id);
+    $stmt1->execute(); // abaikan jika tidak ada, supaya tetap bisa lanjut
+    $stmt1->close();
 
+    // Sekarang hapus dari tabel Buku
+    $stmt2 = $conn->prepare("DELETE FROM Buku WHERE ID = ?");
+    $stmt2->bind_param("i", $id);
 
-       // Siapkan query DELETE dengan prepared statement
-       $stmt = $conn->prepare("DELETE FROM Buku WHERE ID = ?");
-       $stmt->bind_param("i", $id); // "i" menandakan tipe data integer
+    if ($stmt2->execute()) {
+        echo "<script>alert('Data buku berhasil dihapus'); window.location='index.php';</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus buku: " . addslashes($stmt2->error) . "'); window.location='index.php';</script>";
+    }
 
+    $stmt2->close();
+} else {
+    echo "<script>alert('ID tidak valid'); window.location='index.php';</script>";
+}
 
-       // Eksekusi dan tangani hasilnya
-       if ($stmt->execute()) {
-           echo "<script>alert('Data berhasil dihapus'); window.location='index.php';</script>";
-       } else {
-           echo "<script>alert('Gagal menghapus data: " . addslashes($stmt->error) . "'); window.location='index.php';</script>";
-       }
-
-
-       // Tutup statement
-       $stmt->close();
-   } else {
-       echo "<script>alert('ID tidak valid'); window.location='index.php';</script>";
-   }
-
-
-   // Tutup koneksi
-   $conn->close();
+$conn->close();
 ?>
